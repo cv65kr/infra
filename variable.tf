@@ -1,0 +1,46 @@
+variable "environment" {
+  default = "stg"
+}
+
+variable "dns_zone_name" {
+  default = "kk.dev"
+}
+
+variable "kubernetes_cluster_name" {
+  description = "Name for the Kubernetes cluster"
+  default     = "k8s"
+}
+
+variable "tags" {
+  default = {}
+}
+
+variable "aws_region" {
+  default = "eu-west-1"
+}
+
+variable "aws_profile" {
+  default = "playground"
+}
+
+variable "nodes_instances_sizes" {
+  default = [
+    "t3.medium"
+  ]
+}
+
+variable "auto_scale_options" {
+  default = {
+    min     = 1
+    max     = 2
+    desired = 1
+  }
+}
+
+variable "helm_istio_version" {
+  default = "1.15.3"
+}
+
+variable "token" {
+  default = "k8s-aws-v1.aHR0cHM6Ly9zdHMuZXUtd2VzdC0xLmFtYXpvbmF3cy5jb20vP0FjdGlvbj1HZXRDYWxsZXJJZGVudGl0eSZWZXJzaW9uPTIwMTEtMDYtMTUmWC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BU0lBWERIRFdUUFoyUkNNWlpYNCUyRjIwMjIxMDI4JTJGZXUtd2VzdC0xJTJGc3RzJTJGYXdzNF9yZXF1ZXN0JlgtQW16LURhdGU9MjAyMjEwMjhUMjIzODA4WiZYLUFtei1FeHBpcmVzPTYwJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCUzQngtazhzLWF3cy1pZCZYLUFtei1TZWN1cml0eS1Ub2tlbj1JUW9KYjNKcFoybHVYMlZqRUVvYUNXVjFMWGRsYzNRdE1TSkhNRVVDSUZUODRpUG5sYyUyRmdmUURqUHlQUnJOUHY5T2hlcHBDenVBM3JVYVZZQXVkM0FpRUFudkZERXlLY1FzRkZHWHVVNTVaM2U2RW5RejluS0xkSDVtRmsxWEZ6Z21RcXFnTUlNeEFBR2d3ME9EYzVOVFl6TWpNek1UVWlETjl3S2ElMkZsdDZOb1pUVkNxaXFIQTVnT0JZWTlvYWttRWZzVTJUY2tWUmljTlY0NzglMkYybm9uN3RyeG82SHl2ZzVHczglMkJCalU2dGhmTUJYTGgzc2ZQZjhTZ0VRbUlPZXFZVDclMkZsaTFDWlVRT0sycnlpdUZENVVkdnVsNmZUZmt6SnBZTCUyRm1pakpPWXAxaklPbnhNZEx6UGZDdnE2d3lQMGl0QlBFTWFrdm0lMkJFS2ZZNnRIUnNWSENsdEp5QmVQMFhoTEdJNGtvZkxWc1l3dzdydjZ6UGh2SXJleW93Szg4UUdoaFdSbWtIVlhrQmdnOW4lMkJQNFlIemNSa0RHVk1yRFB4ZGk5MW8wU1dEaldSbVptRDhZaERteHg1Q2V2M0xjOENvVVZoZGUzd2pDWCUyRmRTb1V5cEdLZ1FlV003STVFeTlQeTRlRldmTW9mJTJCdmptbW9vaEduNzVXN1kyb1UlMkYyJTJGSnRSdkN1SGI5WWFVcldrQnJPTXNrczE4cUc0eGElMkZYb0QzcjdSa0hJTUlCbVF1NjFGb01rUjZadzIyUkxWWFZPTERjNDlSanQ4Y0F1M3MzUiUyRndiRnFIUFFNbnN5UDJXVlBZVXVjZ3ltVGk3dHYxeWduN0ZhblRSMGpkdmN2JTJGOHpmQ3NCUnpGVmN3YmRKMHRlUVI0bU10dUJhYXdVZDZwRU5UcUFsMmVXMEdsWWpYUklENlZHbTFUdUVuM0RmJTJCNW93Z0slMkZ3bWdZNnBnR2lScUNpc3dhR1htYWNJQ1hWR1o1TSUyRmhEaVpHUSUyRlUxTVFESkwlMkI0RTFUbGZta25rVlVhQUhyWmRzcVBmM2R6cFp4YTIyUVIyVkYwRGJzMlc5TDNSVUVyOGJrT3JWU2FPeWtSMWlWenZaYXpIJTJGVXhQenE2NWZUVDFBb0dMZGROeHhmaXVkRWgxY2FxRUQ5RjlzUnpjR0ZtSkY0aDd2UTRqbjhFRjBSMHFNYyUyRlJmN3NMWEFFNW4yU3diR0R2TGRXOUhqJTJGSmRJNkFnUzlLVDRMVTJjczA0b05KTG14bElYJlgtQW16LVNpZ25hdHVyZT1mZDM5MmZjYzFkNmUwY2I1ZDE0ZTA3ZjkxZmJkZmM2NzhhNTNmOWUzZGM4NzUwZWE2NTMzZjRmZmFjMDM4ZWEz"
+}

@@ -1,0 +1,107 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: podinfo
+  namespace: app
+  labels:
+    app: podinfo
+spec:
+  minReadySeconds: 5
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 0
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: podinfo
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+      labels:
+        app: podinfo
+    spec:
+      containers:
+      - name: podinfod
+        image: ghcr.io/stefanprodan/podinfo:6.2.2
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 9898
+          name: http
+          protocol: TCP
+        command:
+        - ./podinfo
+        - --port=9898
+        - --level=info
+        livenessProbe:
+          exec:
+            command:
+            - podcli
+            - check
+            - http
+            - localhost:9898/healthz
+          initialDelaySeconds: 5
+          timeoutSeconds: 5
+        readinessProbe:
+          exec:
+            command:
+            - podcli
+            - check
+            - http
+            - localhost:9898/readyz
+          initialDelaySeconds: 5
+          timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: 2000m
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 64Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: podinfo
+  namespace: app
+  labels:
+    app: podinfo
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 9898
+      targetPort: 9898
+      protocol: TCP
+  selector:
+    app: podinfo
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: frontend-http
+  namespace: app
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - istio-system/app-gateway
+  http:
+  - route:
+    - destination:
+        host: podinfo.app.svc.cluster.local
+        port: 
+          number: 9898
+      weight: 100
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: frontend-dr
+  namespace: app
+spec:
+  host: "*"
+  subsets:
+  - name: app
+    labels:
+      app: podinfo
