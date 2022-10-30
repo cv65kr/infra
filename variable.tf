@@ -41,6 +41,18 @@ variable "helm_istio_version" {
   default = "1.15.3"
 }
 
+variable "helm_prometheus_version" {
+  default = "15.9.0"
+}
+
+variable "helm_kiali_version" {
+  default = "1.55.1"
+}
+
+variable "helm_grafana_version" {
+  default = "6.31.1"
+}
+
 variable "release_version" {
   default = "1.0.0"
 }

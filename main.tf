@@ -25,8 +25,8 @@ provider "aws" {
   profile = var.aws_profile
 
   default_tags {
-   tags = local.tags
- }
+    tags = local.tags
+  }
 }
 
 provider "local" {}
@@ -135,6 +135,7 @@ module "eks" {
       name = "default"
       selectors = [
         {
+          # Look on istio.tf
           namespace = "tools"
         }
       ]

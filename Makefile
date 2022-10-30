@@ -1,3 +1,7 @@
+ROOT_DIR = .
+DASHBOARDS_DIR = ${ROOT_DIR}/tools/dashboards
+DASHBOARDS_COMPRESSED_DIR = ${DASHBOARDS_DIR}_compressed
+
 default: help
 
 .PHONY: run-dry
@@ -30,6 +34,13 @@ fix: ## Fix style
 .PHONY: apply-podinfo
 apply-podinfo: ## Apply podinfo to EKS
 	kubectl apply -f podinfo/app.yaml -f podinfo/gateway.yaml
+
+.PHONY: compress-grafana-dasboards
+compress-grafana-dasboards: ## Compress grafana dasboards
+	@for file in $(DASHBOARDS_DIR)/* ; do \
+		filename=`echo "$$file" | sed 's|^.*/||'`; \
+        jq -r tostring $$file > ${DASHBOARDS_COMPRESSED_DIR}/$$filename; \
+    done
 
 .PHONY: help
 help: ## Display this help message
