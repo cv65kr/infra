@@ -2,7 +2,6 @@ provider "kubernetes" {
   host                   = module.eks.cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
   config_path            = local_file.kubeconfig.filename
-  #token = var.token
 }
 
 provider "helm" {
@@ -10,7 +9,6 @@ provider "helm" {
     host                   = module.eks.cluster_endpoint
     cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
     config_path            = local_file.kubeconfig.filename
-    #token = var.token
   }
 }
 
