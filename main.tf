@@ -23,6 +23,10 @@ terraform {
 provider "aws" {
   region  = var.aws_region
   profile = var.aws_profile
+
+  default_tags {
+   tags = local.tags
+ }
 }
 
 provider "local" {}
@@ -63,7 +67,6 @@ module "eks" {
   cluster_name = "${local.container_id}-eks"
   subnet_ids   = module.vpc.public_subnets
   vpc_id       = module.vpc.vpc_id
-  tags         = local.tags
   iam_role_arn = aws_iam_role.eks_cluster.arn
 
   node_security_group_additional_rules = {
@@ -120,8 +123,6 @@ module "eks" {
 
       instance_types = var.nodes_instances_sizes
       capacity_type  = "SPOT"
-
-      tags = local.tags
 
       labels = {
         instance_type = "ec2"
