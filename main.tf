@@ -128,6 +128,17 @@ module "eks" {
       }
     }
   }
+
+  fargate_profiles = {
+    default = {
+      name = "default"
+      selectors = [
+        {
+          namespace = "tools"
+        }
+      ]
+    }
+  }
 }
 
 resource "local_file" "kubeconfig" {

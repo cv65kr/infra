@@ -7,7 +7,10 @@ locals {
 
   tags = merge(
     var.tags,
-    tomap({ "Environment" = var.environment }),
+    tomap({
+      "Environment"     = var.environment,
+      "Release-version" = var.release_version,
+    }),
   )
 
   kubeconfig = yamlencode({

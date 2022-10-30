@@ -40,3 +40,7 @@ variable "auto_scale_options" {
 variable "helm_istio_version" {
   default = "1.15.3"
 }
+
+variable "release_version" {
+  default = "1.0.0"
+}
