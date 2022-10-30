@@ -122,6 +122,10 @@ module "eks" {
       capacity_type  = "SPOT"
 
       tags = local.tags
+
+      labels = {
+        instance_type = "ec2"
+      }
     }
   }
 }
