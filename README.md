@@ -39,7 +39,7 @@ EKS:
 | kubeconfig_path | Path to kubeconfig default: kubeconfig_stg-k8s-kk-dev |
 
 # CD
-For progressive delivery operator it's used [https://flagger.app/](Flagger). You will find an example of usage canary pattern in [podinfo/canary.yaml](Canary example).
+For progressive delivery operator it's used [https://flagger.app/](Flagger). You will find an example of usage canary pattern in [./podinfo/canary.yaml](Canary example).
 
 # Development and debugging
 For better DX, there is installed [https://www.telepresence.io/](Telepresence).
@@ -71,12 +71,14 @@ compress-grafana-dasboards     Compress grafana dasboards
 help                           Display this help message
 ```
 
+# How to use
+TODO
+
 ------
 TODO:
 - Route53
-- mtls
-- fargate for not sidecar proxy pods
-- state in dynamodb 
-
-
-
+- mTLS
+- Fargate for not sidecar proxy pods
+- State in dynamodb 
+- [https://infracost.io](infracost.io)
+- Optional logging stack
