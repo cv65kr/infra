@@ -57,6 +57,10 @@ variable "helm_flagger_version" {
   default = "1.24.1"
 }
 
+variable "helm_telepresence_version" {
+  default = "2.8.3"
+}
+
 variable "release_version" {
   default = "1.0.0"
 }

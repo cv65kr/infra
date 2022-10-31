@@ -194,6 +194,19 @@ resource "helm_release" "flagger" {
   ]
 }
 
+resource "helm_release" "telepresence" {
+  name       = "traffic-manager"
+  repository = "https://app.getambassador.io"
+  chart      = "traffic-manager"
+  version    = var.helm_telepresence_version
+  namespace  = kubernetes_namespace.namespace_tools.id
+  depends_on = [local_file.kubeconfig, kubernetes_namespace.namespace_tools]
+
+  values = [
+    "${file("${path.module}/tools/values-telepresence.yaml")}"
+  ]
+}
+
 ## App namespace
 resource "kubernetes_namespace" "namespace_app" {
   metadata {

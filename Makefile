@@ -8,7 +8,7 @@ default: help
 run-dry: init plan ## Run terraform without deployment
 
 .PHONY: run
-run-dry: init plan apply ## Run terraform with deployment
+run: init plan apply ## Run terraform with deployment
 
 .PHONY: init
 init: ## Terraform init
@@ -34,6 +34,12 @@ fix: ## Fix style
 .PHONY: apply-podinfo
 apply-podinfo: ## Apply podinfo to EKS
 	kubectl apply -f podinfo/deployment.yaml -f podinfo/gateway.yaml -f podinfo/hpa.yaml -f podinfo/canary.yaml -f podinfo/metric.yaml
+
+.PHONY: generate-cerfificate
+generate-cerfificate: ## Generate certificate e.g. make generate-cerfificate domain=yourdomain.com
+	mkdir -p certs; \
+	openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 -nodes \
+	-keyout certs/key.pem -out certs/cert.pem -subj "/CN=$(domain)"
 
 .PHONY: compress-grafana-dasboards
 compress-grafana-dasboards: ## Compress grafana dasboards
