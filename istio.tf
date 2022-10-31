@@ -149,6 +149,20 @@ resource "kubernetes_config_map" "istio-services-grafana-dashboards" {
   depends_on = [local_file.kubeconfig]
 }
 
+resource "kubernetes_config_map" "istio-services-grafana-flagger-dashboards" {
+  metadata {
+    name      = "istio-services-grafana-flagger-dashboards"
+    namespace = kubernetes_namespace.namespace_tools.id
+  }
+
+  data = {
+    "flagger-istio-dashboard.json" = "${file("${path.module}/tools/dashboards_compressed/flagger-istio-dashboard.json")}"
+    "flagger-envoy-dashboard.json" = "${file("${path.module}/tools/dashboards_compressed/flagger-envoy-dashboard.json")}"
+  }
+
+  depends_on = [local_file.kubeconfig]
+}
+
 resource "helm_release" "grafana" {
   name       = "grafana"
   repository = "https://grafana.github.io/helm-charts"

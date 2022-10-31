@@ -57,6 +57,7 @@ dashboardProviders:
 dashboardsConfigMaps:
   istio: "istio-grafana-dashboards"
   istio-services: "istio-services-grafana-dashboards"
+  flagger: "istio-services-grafana-flagger-dashboards"
 
 # Configure the prometheus data source. We expect prometheus:9090 in the same namespace
 datasources:
