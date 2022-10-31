@@ -39,12 +39,12 @@ EKS:
 | kubeconfig_path | Path to kubeconfig default: kubeconfig_stg-k8s-kk-dev |
 
 # CD
-For progressive delivery operator it's used (https://flagger.app/)[Flagger]. You will find an example of usage canary pattern in (./podinfo/canary.yaml)[Canary example].
+For progressive delivery operator it's used [https://flagger.app/](Flagger). You will find an example of usage canary pattern in [podinfo/canary.yaml](Canary example).
 
 # Development and debugging
-For better DX, there is installed (https://www.telepresence.io/)[Telepresence].
+For better DX, there is installed [https://www.telepresence.io/](Telepresence).
 
-To start use it on your local computer, follow the (https://www.getambassador.io/docs/telepresence/latest/install/)[instructions].
+To start use it on your local computer, follow the [https://www.getambassador.io/docs/telepresence/latest/install/](instructions).
 
 # Maintenance of your apps
 TODO
