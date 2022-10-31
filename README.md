@@ -1,5 +1,7 @@
 # Infrastructure
 
+**[WIP]** Project is still in progress
+
 Simple infrastructure build with Terraform to create EKS cluster which supporting Istio.
 
 VPC:
@@ -11,6 +13,9 @@ EKS:
 - EKS managed node groups based on SPOT instances
 - Fargate profiles configured for namespace without sidecar injection
 - Using public and private subnets
+
+**Limitations**
+You cannot use AWS fargate for all pods - [https://github.com/aws/containers-roadmap/issues/682](https://github.com/aws/containers-roadmap/issues/682).
 
 ## Terraform
 
@@ -37,15 +42,14 @@ EKS:
 ### Output
 | Name            | Description                                           |
 |-----------------|-------------------------------------------------------|
-| kubeconfig_path | Path to kubeconfig default: kubeconfig_stg-k8s-kk-dev |
 
 # CD
-For progressive delivery operator it's used [https://flagger.app/](Flagger). You will find an example of usage canary pattern in [/podinfo/canary.yaml](Canary example).
+For progressive delivery operator it's used [Flagger](https://flagger.app/). You will find an example of usage canary pattern in [Canary example](podinfo/canary.yaml).
 
 # Development and debugging
-For better DX, there is installed [https://www.telepresence.io/](Telepresence).
+For better DX, there is installed [Telepresence](https://www.telepresence.io/).
 
-To start use it on your local computer, follow the [https://www.getambassador.io/docs/telepresence/latest/install/](instructions).
+To start use it on your local computer, follow the [instructions](https://www.getambassador.io/docs/telepresence/latest/install/).
 
 # Maintenance of your apps
 
@@ -87,8 +91,10 @@ run                            Run terraform with deployment
 init                           Terraform init
 plan                           Terraform plan
 apply                          Terraform apply
+destroy                        Terraform destroy
 test                           Terraform test
 fix                            Fix style
+update-kubeconfig              Create or update kubeconfig e.g. make update-kubeconfig profile=playground cluster=my-cluster
 apply-podinfo                  Apply podinfo to EKS
 generate-cerfificate           Generate certificate e.g. make generate-cerfificate domain=yourdomain.com
 compress-grafana-dasboards     Compress grafana dasboards
@@ -98,11 +104,12 @@ help                           Display this help message
 # How to use
 
 Required tools:
-- [https://www.terraform.io/](Terraform)
-- [https://kubernetes.io/docs/tasks/tools/](Kubectl)
-- [https://www.telepresence.io/](Telepresence)
-- [https://stedolan.github.io/jq/](JQ)
-- [https://cli.github.com/](GH)
+- [Terraform](https://www.terraform.io/)
+- [AWS cli](https://aws.amazon.com/cli/)
+- [Kubectl](https://kubernetes.io/docs/tasks/tools/)
+- [Telepresence](https://www.telepresence.io/)
+- [JQ](https://stedolan.github.io/jq/)
+- [GH](https://cli.github.com/)
 
 Run in your cluster:
 1. Configure your AWS profile
@@ -118,13 +125,14 @@ make run-dry
 ```
 make apply-podinfo
 ```
+4. Run `make update-kubeconfig profile=playground cluster=stg-k8s-kk-dev-eks` to store actual kubeconfig file, you can test if connection working properly by `kubectl get svc -n app` command.
 
 ------
 @TODO:
 - Route53
 - mTLS
 - State in dynamodb 
-- [https://infracost.io](infracost.io)
+- [infracost.io](https://infracost.io)
 - Optional logging stack
 - Components settings adjustment
 - Podinfo as helm + variable which decides if should be deployed or not

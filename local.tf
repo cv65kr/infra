@@ -12,30 +12,4 @@ locals {
       "Release-version" = var.release_version,
     }),
   )
-
-  kubeconfig = yamlencode({
-    apiVersion      = "v1"
-    kind            = "Config"
-    current-context = "aws"
-    clusters = [{
-      name = module.eks.cluster_id
-      cluster = {
-        certificate-authority-data = module.eks.cluster_certificate_authority_data
-        server                     = module.eks.cluster_endpoint
-      }
-    }]
-    contexts = [{
-      name = "aws"
-      context = {
-        cluster = module.eks.cluster_id
-        user    = "aws"
-      }
-    }]
-    users = [{
-      name = "aws"
-      user = {
-        token = data.aws_eks_cluster_auth.this.token
-      }
-    }]
-  })
 }

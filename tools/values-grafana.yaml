@@ -18,6 +18,9 @@ podLabels:
   app: grafana
   sidecar.istio.io/inject: "false"
 
+podAnnotations:
+  CapacityProvisioned: 0.5vCPU 1GB
+
 # Demo only, so we will have no authentication
 admin:
   existingSecret: true

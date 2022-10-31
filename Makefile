@@ -22,6 +22,10 @@ plan: ## Terraform plan
 apply: ## Terraform apply
 	terraform apply
 
+.PHONY: destroy
+destroy: ## Terraform destroy
+	terraform destroy
+
 .PHONY: test
 test: ## Terraform test
 	terraform test
@@ -30,6 +34,10 @@ test: ## Terraform test
 fix: ## Fix style
 	terraform fmt -check -diff; \
 	terraform fmt
+
+.PHONY: update-kubeconfig
+update-kubeconfig: ## Create or update kubeconfig e.g. make update-kubeconfig profile=playground cluster=my-cluster
+	aws --profile=$(profile) eks update-kubeconfig --name $(cluster)
 
 .PHONY: apply-podinfo
 apply-podinfo: ## Apply podinfo to EKS

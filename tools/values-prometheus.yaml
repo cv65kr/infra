@@ -10,6 +10,8 @@ nodeExporter:
 server:
   podLabels:
     sidecar.istio.io/inject: "false"
+  podAnnotations:
+    CapacityProvisioned: 0.5vCPU 1GB
   persistentVolume:
     enabled: false
   # Use port 9090 to match Istio documentation

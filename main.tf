@@ -6,8 +6,8 @@ terraform {
       version = ">= 4.3"
     }
     helm = {
-      source  = "helm"
-      version = ">= 2.7"
+      source  = "hashicorp/helm"
+      version = "= 2.5.1"
     }
     kubernetes = {
       source  = "kubernetes"
@@ -142,9 +142,4 @@ module "eks" {
       ]
     }
   }
-}
-
-resource "local_file" "kubeconfig" {
-  content  = local.kubeconfig
-  filename = "./kubeconfig_${local.container_id}"
 }

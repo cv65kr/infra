@@ -1,14 +1,26 @@
 provider "kubernetes" {
   host                   = module.eks.cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-  config_path            = local_file.kubeconfig.filename
+
+  exec {
+    api_version = "client.authentication.k8s.io/v1alpha1"
+    command     = "aws"
+    # This requires the awscli to be installed locally where Terraform is executed
+    args = ["--profile", var.aws_profile, "eks", "get-token", "--cluster-name", module.eks.cluster_id]
+  }
 }
 
 provider "helm" {
   kubernetes {
     host                   = module.eks.cluster_endpoint
     cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-    config_path            = local_file.kubeconfig.filename
+
+    exec {
+      api_version = "client.authentication.k8s.io/v1alpha1"
+      command     = "aws"
+      # This requires the awscli to be installed locally where Terraform is executed
+      args = ["--profile", var.aws_profile, "eks", "get-token", "--cluster-name", module.eks.cluster_id]
+    }
   }
 }
 
@@ -20,7 +32,7 @@ resource "kubernetes_namespace" "namespace_istio-system" {
   metadata {
     name = "istio-system"
   }
-  depends_on = [local_file.kubeconfig]
+  depends_on = [module.eks.cluster_id]
 }
 
 resource "helm_release" "istio-base" {
@@ -29,7 +41,7 @@ resource "helm_release" "istio-base" {
   chart      = "base"
   version    = var.helm_istio_version
   namespace  = kubernetes_namespace.namespace_istio-system.id
-  depends_on = [local_file.kubeconfig]
+  depends_on = [module.eks.cluster_id]
 }
 
 resource "helm_release" "istiod" {
@@ -38,12 +50,12 @@ resource "helm_release" "istiod" {
   chart      = "istiod"
   version    = var.helm_istio_version
   namespace  = kubernetes_namespace.namespace_istio-system.id
-  depends_on = [local_file.kubeconfig, helm_release.istio-base]
+  depends_on = [module.eks.cluster_id, helm_release.istio-base]
 }
 
 ### Subsitute for --wait parameter
 resource "null_resource" "istiod-delay" {
-  depends_on = [local_file.kubeconfig, helm_release.istiod]
+  depends_on = [module.eks.cluster_id, helm_release.istiod]
   provisioner "local-exec" {
     command = "sleep 100"
   }
@@ -57,7 +69,7 @@ resource "kubernetes_namespace" "namespace_istio-ingress" {
     }
     name = "istio-ingress"
   }
-  depends_on = [local_file.kubeconfig, null_resource.istiod-delay]
+  depends_on = [module.eks.cluster_id, null_resource.istiod-delay]
 }
 
 resource "helm_release" "istio-gateway" {
@@ -66,7 +78,7 @@ resource "helm_release" "istio-gateway" {
   chart      = "gateway"
   version    = var.helm_istio_version
   namespace  = kubernetes_namespace.namespace_istio-ingress.id
-  depends_on = [local_file.kubeconfig, helm_release.istio-base, helm_release.istiod]
+  depends_on = [module.eks.cluster_id, helm_release.istio-base, helm_release.istiod]
   timeout    = 400
 }
 
@@ -75,7 +87,7 @@ resource "kubernetes_namespace" "namespace_tools" {
   metadata {
     name = "tools"
   }
-  depends_on = [local_file.kubeconfig]
+  depends_on = [module.eks.cluster_id]
 }
 
 resource "helm_release" "prometheus" {
@@ -84,8 +96,8 @@ resource "helm_release" "prometheus" {
   chart      = "prometheus"
   version    = var.helm_prometheus_version
   namespace  = kubernetes_namespace.namespace_tools.id
-  depends_on = [local_file.kubeconfig, kubernetes_namespace.namespace_tools]
-
+  depends_on = [module.eks.cluster_id, kubernetes_namespace.namespace_tools]
+  timeout    = 400
   values = [
     "${file("${path.module}/tools/values-prometheus.yaml")}"
   ]
@@ -97,8 +109,8 @@ resource "helm_release" "kiali" {
   chart      = "kiali-server"
   version    = var.helm_kiali_version
   namespace  = kubernetes_namespace.namespace_tools.id
-  depends_on = [local_file.kubeconfig, kubernetes_namespace.namespace_tools]
-
+  depends_on = [module.eks.cluster_id, kubernetes_namespace.namespace_tools]
+  timeout    = 400
   set {
     name  = "deployment.image_version"
     value = "v1.55"
@@ -130,7 +142,7 @@ resource "kubernetes_config_map" "istio-grafana-dashboards" {
     "istio-performance-dashboard.json" = "${file("${path.module}/tools/dashboards_compressed/istio-performance-dashboard.json")}"
   }
 
-  depends_on = [local_file.kubeconfig]
+  depends_on = [module.eks.cluster_id]
 }
 
 resource "kubernetes_config_map" "istio-services-grafana-dashboards" {
@@ -146,7 +158,7 @@ resource "kubernetes_config_map" "istio-services-grafana-dashboards" {
     "istio-extension-dashboard.json" = "${file("${path.module}/tools/dashboards_compressed/istio-extension-dashboard.json")}"
   }
 
-  depends_on = [local_file.kubeconfig]
+  depends_on = [module.eks.cluster_id]
 }
 
 resource "kubernetes_config_map" "istio-services-grafana-flagger-dashboards" {
@@ -160,7 +172,7 @@ resource "kubernetes_config_map" "istio-services-grafana-flagger-dashboards" {
     "flagger-envoy-dashboard.json" = "${file("${path.module}/tools/dashboards_compressed/flagger-envoy-dashboard.json")}"
   }
 
-  depends_on = [local_file.kubeconfig]
+  depends_on = [module.eks.cluster_id]
 }
 
 resource "helm_release" "grafana" {
@@ -170,12 +182,12 @@ resource "helm_release" "grafana" {
   version    = var.helm_grafana_version
   namespace  = kubernetes_namespace.namespace_tools.id
   depends_on = [
-    local_file.kubeconfig,
+    module.eks.cluster_id,
     kubernetes_namespace.namespace_tools,
     kubernetes_config_map.istio-grafana-dashboards,
     kubernetes_config_map.istio-services-grafana-dashboards
   ]
-
+  timeout = 400
   values = [
     "${file("${path.module}/tools/values-grafana.yaml")}"
   ]
@@ -187,8 +199,8 @@ resource "helm_release" "flagger" {
   chart      = "flagger"
   version    = var.helm_flagger_version
   namespace  = kubernetes_namespace.namespace_tools.id
-  depends_on = [local_file.kubeconfig, kubernetes_namespace.namespace_tools]
-
+  depends_on = [module.eks.cluster_id, kubernetes_namespace.namespace_tools]
+  timeout    = 400
   values = [
     "${file("${path.module}/tools/values-flagger.yaml")}"
   ]
@@ -198,12 +210,12 @@ resource "helm_release" "telepresence" {
   count = var.telepresence_enabled ? 1 : 0
 
   name       = "traffic-manager"
-  repository = "https://app.getambassador.io"
-  chart      = "traffic-manager"
+  repository = "https://getambassador.io"
+  chart      = "telepresence"
   version    = var.helm_telepresence_version
   namespace  = kubernetes_namespace.namespace_tools.id
-  depends_on = [local_file.kubeconfig, kubernetes_namespace.namespace_tools]
-
+  depends_on = [module.eks.cluster_id, kubernetes_namespace.namespace_tools]
+  timeout    = 400
   values = [
     "${file("${path.module}/tools/values-telepresence.yaml")}"
   ]
@@ -217,5 +229,5 @@ resource "kubernetes_namespace" "namespace_app" {
     }
     name = "app"
   }
-  depends_on = [local_file.kubeconfig]
+  depends_on = [module.eks.cluster_id]
 }

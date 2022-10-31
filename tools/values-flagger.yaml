@@ -13,6 +13,7 @@ podAnnotations:
   prometheus.io/scrape: "true"
   prometheus.io/port: "8080"
   appmesh.k8s.aws/sidecarInjectorWebhook: disabled
+  CapacityProvisioned: 0.5vCPU 1GB
 
 # priority class name for pod priority configuration
 podPriorityClassName: ""
