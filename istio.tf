@@ -195,6 +195,8 @@ resource "helm_release" "flagger" {
 }
 
 resource "helm_release" "telepresence" {
+  count = var.telepresence_enabled ? 1 : 0
+
   name       = "traffic-manager"
   repository = "https://app.getambassador.io"
   chart      = "traffic-manager"

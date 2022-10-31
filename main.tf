@@ -130,17 +130,18 @@ module "eks" {
     }
   }
 
-  # fargate_profiles = {
-  #   default = {
-  #     name = "default"
-  #     selectors = [
-  #       {
-  #         # Look on istio.tf
-  #         namespace = "tools"
-  #       }
-  #     ]
-  #   }
-  # }
+  fargate_profiles = {
+    tools = {
+      name       = "tools"
+      subnet_ids = module.vpc.private_subnets
+      selectors = [
+        {
+          # Look on istio.tf
+          namespace = "tools"
+        }
+      ]
+    }
+  }
 }
 
 resource "local_file" "kubeconfig" {

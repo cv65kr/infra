@@ -9,7 +9,7 @@ VPC:
 
 EKS:
 - EKS managed node groups based on SPOT instances
-- Fargate profiles configured for namespace without sidecar injection (TODO)
+- Fargate profiles configured for namespace without sidecar injection
 - Using public and private subnets
 
 ## Terraform
@@ -32,6 +32,7 @@ EKS:
 | helm_flagger_version      | 1.24.1                          |                                                 |
 | helm_telepresence_version | 2.8.3                           |                                                 |
 | release_version           | 1.0.0                           | Release version of your infrastructure          |
+| telepresence_enabled      | true                            | Determine if telepresence should be in cluster  |
 
 ### Output
 | Name            | Description                                           |
@@ -96,6 +97,14 @@ help                           Display this help message
 
 # How to use
 
+Required tools:
+- [https://www.terraform.io/](Terraform)
+- [https://kubernetes.io/docs/tasks/tools/](Kubectl)
+- [https://www.telepresence.io/](Telepresence)
+- [https://stedolan.github.io/jq/](JQ)
+- [https://cli.github.com/](GH)
+
+Run in your cluster:
 1. Configure your AWS profile
 2. To run with deployment, use command:
 ```
@@ -114,7 +123,6 @@ make apply-podinfo
 @TODO:
 - Route53
 - mTLS
-- Fargate for not sidecar proxy pods
 - State in dynamodb 
 - [https://infracost.io](infracost.io)
 - Optional logging stack
@@ -122,3 +130,4 @@ make apply-podinfo
 - Podinfo as helm + variable which decides if should be deployed or not
 - Github projects detetion and auto deployment (section: Prefered structure of your app)
 - SSM agent
+- JWT auth
