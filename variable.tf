@@ -53,6 +53,10 @@ variable "helm_grafana_version" {
   default = "6.31.1"
 }
 
+variable "helm_flagger_version" {
+  default = "1.24.1"
+}
+
 variable "release_version" {
   default = "1.0.0"
 }

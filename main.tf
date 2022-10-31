@@ -130,17 +130,17 @@ module "eks" {
     }
   }
 
-  fargate_profiles = {
-    default = {
-      name = "default"
-      selectors = [
-        {
-          # Look on istio.tf
-          namespace = "tools"
-        }
-      ]
-    }
-  }
+  # fargate_profiles = {
+  #   default = {
+  #     name = "default"
+  #     selectors = [
+  #       {
+  #         # Look on istio.tf
+  #         namespace = "tools"
+  #       }
+  #     ]
+  #   }
+  # }
 }
 
 resource "local_file" "kubeconfig" {

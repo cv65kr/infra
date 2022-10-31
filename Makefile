@@ -33,7 +33,7 @@ fix: ## Fix style
 
 .PHONY: apply-podinfo
 apply-podinfo: ## Apply podinfo to EKS
-	kubectl apply -f podinfo/app.yaml -f podinfo/gateway.yaml
+	kubectl apply -f podinfo/app.yaml -f podinfo/gateway.yaml -f podinfo/hpa.yaml -f podinfo/canary.yaml -f podinfo/metric.yaml
 
 .PHONY: compress-grafana-dasboards
 compress-grafana-dasboards: ## Compress grafana dasboards

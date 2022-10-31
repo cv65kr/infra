@@ -119,19 +119,6 @@ resource "helm_release" "kiali" {
   ]
 }
 
-resource "helm_release" "grafana" {
-  name       = "grafana"
-  repository = "https://grafana.github.io/helm-charts "
-  chart      = "grafana"
-  version    = var.helm_grafana_version
-  namespace  = kubernetes_namespace.namespace_tools.id
-  depends_on = [local_file.kubeconfig, kubernetes_namespace.namespace_tools]
-
-  values = [
-    "${file("${path.module}/tools/values-grafana.yaml")}"
-  ]
-}
-
 resource "kubernetes_config_map" "istio-grafana-dashboards" {
   metadata {
     name      = "istio-grafana-dashboards"
@@ -143,7 +130,7 @@ resource "kubernetes_config_map" "istio-grafana-dashboards" {
     "istio-performance-dashboard.json" = "${file("${path.module}/tools/dashboards_compressed/istio-performance-dashboard.json")}"
   }
 
-  depends_on = [local_file.kubeconfig, helm_release.grafana]
+  depends_on = [local_file.kubeconfig]
 }
 
 resource "kubernetes_config_map" "istio-services-grafana-dashboards" {
@@ -159,7 +146,38 @@ resource "kubernetes_config_map" "istio-services-grafana-dashboards" {
     "istio-extension-dashboard.json" = "${file("${path.module}/tools/dashboards_compressed/istio-extension-dashboard.json")}"
   }
 
-  depends_on = [local_file.kubeconfig, helm_release.grafana]
+  depends_on = [local_file.kubeconfig]
+}
+
+resource "helm_release" "grafana" {
+  name       = "grafana"
+  repository = "https://grafana.github.io/helm-charts"
+  chart      = "grafana"
+  version    = var.helm_grafana_version
+  namespace  = kubernetes_namespace.namespace_tools.id
+  depends_on = [
+    local_file.kubeconfig,
+    kubernetes_namespace.namespace_tools,
+    kubernetes_config_map.istio-grafana-dashboards,
+    kubernetes_config_map.istio-services-grafana-dashboards
+  ]
+
+  values = [
+    "${file("${path.module}/tools/values-grafana.yaml")}"
+  ]
+}
+
+resource "helm_release" "flagger" {
+  name       = "flagger"
+  repository = "https://flagger.app"
+  chart      = "flagger"
+  version    = var.helm_flagger_version
+  namespace  = kubernetes_namespace.namespace_tools.id
+  depends_on = [local_file.kubeconfig, kubernetes_namespace.namespace_tools]
+
+  values = [
+    "${file("${path.module}/tools/values-flagger.yaml")}"
+  ]
 }
 
 ## App namespace

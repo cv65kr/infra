@@ -30,3 +30,35 @@ spec:
   - name: app
     labels:
       app: grafana
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: kiali-vc
+  namespace: tools
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - istio-system/app-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /kiali/
+    route:
+    - destination:
+        port:
+          number: 20001
+        host: kiali.tools.svc.cluster.local
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: kiali-dr
+  namespace: tools
+spec:
+  host: "*"
+  subsets:
+  - name: app
+    labels:
+      app.kubernetes.io/name: kiali
