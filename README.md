@@ -39,7 +39,7 @@ EKS:
 | kubeconfig_path | Path to kubeconfig default: kubeconfig_stg-k8s-kk-dev |
 
 # CD
-For progressive delivery operator it's used [https://flagger.app/](Flagger). You will find an example of usage canary pattern in [./podinfo/canary.yaml](Canary example).
+For progressive delivery operator it's used [https://flagger.app/](Flagger). You will find an example of usage canary pattern in [/podinfo/canary.yaml](Canary example).
 
 # Development and debugging
 For better DX, there is installed [https://www.telepresence.io/](Telepresence).
@@ -47,7 +47,30 @@ For better DX, there is installed [https://www.telepresence.io/](Telepresence).
 To start use it on your local computer, follow the [https://www.getambassador.io/docs/telepresence/latest/install/](instructions).
 
 # Maintenance of your apps
-TODO
+
+## Prefered structure of your app
+
+Project should be placed in separate repository. The name of repository should follow the pattern `service-{language}-{project_name}` e.g. `service-go-ecommerce-order-orchestrator`.
+
+Structure of catalogs:
+```
+service-go-project_name
+│   README.md
+│
+└───source
+│   │   your-application-file1.ext
+│   │   your-application-file2.ext
+|   |   ...
+│   
+└───charts
+│    │   Chart.yaml
+│    │   values.yaml
+│    |   ...
+│    
+```
+
+@TODO Add terraform resource which check your organisation repositories and based on repository name pattern upload all charts. This feature should have configuration option.
+
 
 # Dasboards
 To add new dashboard to grafana, add your json to `tools/dasboards` catalog and run `make compress-grafana-dasboards` command. Command will minify jsons and put it in `tools/dashboards_compressed` catalog. Next step is creating `kubernetes_config_map` resource, you will find examples in `istio.tf`.
@@ -72,13 +95,30 @@ help                           Display this help message
 ```
 
 # How to use
-TODO
+
+1. Configure your AWS profile
+2. To run with deployment, use command:
+```
+make run
+```
+To run without deployment, use command:
+```
+make run-dry
+```
+3. Optionally you can deploy podinfo app for testing purposes (kubectl is required on your machine):
+```
+make apply-podinfo
+```
 
 ------
-TODO:
+@TODO:
 - Route53
 - mTLS
 - Fargate for not sidecar proxy pods
 - State in dynamodb 
 - [https://infracost.io](infracost.io)
 - Optional logging stack
+- Components settings adjustment
+- Podinfo as helm + variable which decides if should be deployed or not
+- Github projects detetion and auto deployment (section: Prefered structure of your app)
+- SSM agent
